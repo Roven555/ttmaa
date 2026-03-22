@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Policies\TaskPolicy;
 use App\Models\Task;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,11 +16,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->gate();
-    }
-
-    protected function gate(): void
-    {
-        //
+        Gate::policy(Task::class, TaskPolicy::class);
     }
 }

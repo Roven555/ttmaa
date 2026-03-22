@@ -1,312 +1,138 @@
-# Team Task Manager Application
+# Team Task Manager
 
-A full-stack task management application built with **Laravel 11** (PHP 8.3) backend and **Vue 3** (TypeScript) frontend with **Vuetify 3** UI framework.
+Full-stack task management app — **Laravel 11** API + **Vue 3** SPA (TypeScript, Vuetify 3).
 
-## Features
+Admins manage all tasks; regular users manage only their own. Tasks have title, description, status (`todo` / `in_progress` / `done`), priority (`low` / `medium` / `high`), due date, and assignee.
 
-- **User Authentication**: Simple login/logout system with role-based access
-- **Role-Based Access Control**: Admin users can manage all tasks, regular users can only manage their own
-- **Task Management**: Create, read, update, and delete tasks
-- **Task Filtering**: Filter tasks by status, priority, and search by title/description
-- **Pagination**: Handle large task lists efficiently
-- **Responsive UI**: Built with Vuetify 3 for modern, responsive design
-- **RESTful API**: Clean, well-structured JSON REST API
+## Setup & Run
 
-## Tech Stack
+### Prerequisites
+
+PHP 8.3+, Composer, Node.js 18+, MySQL 8.
 
 ### Backend
-- **Framework**: Laravel 11
-- **Language**: PHP 8.3
-- **Database**: MySQL 8
-- **Authentication**: Laravel Sanctum (API tokens)
-- **Validation**: Form Requests
+
+```bash
+cd api
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `api/.env` and set `DB_PASSWORD` to your MySQL root password, then:
+
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS task_manager;"
+php artisan migrate --seed
+php artisan serve            # → http://localhost:8000
+```
 
 ### Frontend
-- **Framework**: Vue 3
-- **Language**: TypeScript
-- **UI Framework**: Vuetify 3
-- **State Management**: Pinia
-- **HTTP Client**: Axios
-- **Routing**: Vue Router 4
-- **Build Tool**: Vite
 
-## Project Structure
-
-```
-.
-├── api/                          # Laravel Backend
-│   ├── app/
-│   │   ├── Models/              # Database models
-│   │   ├── Http/
-│   │   │   ├── Controllers/     # API controllers
-│   │   │   ├── Requests/        # Form request validation
-│   │   │   └── Resources/       # API response resources
-│   │   └── Policies/            # Authorization policies
-│   ├── database/
-│   │   ├── migrations/          # Database schema
-│   │   └── seeders/             # Database seeders
-│   ├── routes/
-│   │   └── api.php              # API routes
-│   └── .env.example             # Environment template
-│
-├── client/                       # Vue 3 Frontend
-│   ├── src/
-│   │   ├── components/          # Reusable components
-│   │   ├── pages/               # Page components
-│   │   ├── services/            # API service layer
-│   │   ├── stores/              # Pinia stores
-│   │   ├── types/               # TypeScript interfaces
-│   │   ├── router/              # Vue Router config
-│   │   ├── App.vue              # Root component
-│   │   └── main.ts              # Entry point
-│   ├── index.html               # HTML template
-│   ├── vite.config.ts           # Vite config
-│   ├── tsconfig.json            # TypeScript config
-│   └── .env.local               # Environment vars
-│
-├── README.md                     # This file
-├── API.md                        # API documentation
-└── ANSWERS.md                    # Written questions answers
-```
-
-## Prerequisites
-
-- **Node.js** (v18 or higher) - for frontend
-- **PHP** (v8.3 or higher) - for backend
-- **Composer** - PHP package manager
-- **MySQL** (v8 or compatible) - database
-
-## Installation & Setup
-
-### Backend Setup
-
-1. **Navigate to the API directory**:
-   ```bash
-   cd api
-   ```
-
-2. **Install PHP dependencies**:
-   ```bash
-   composer install
-   ```
-
-3. **Copy environment file**:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Generate application key** (if composer scripts don't run automatically):
-   ```bash
-   php artisan key:generate
-   ```
-
-5. **Create MySQL database**:
-   ```sql
-   CREATE DATABASE task_manager;
-   ```
-
-6. **Update database credentials in `.env`**:
-   ```env
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=task_manager
-   DB_USERNAME=root
-   DB_PASSWORD=your_password
-   ```
-
-7. **Run migrations**:
-   ```bash
-   php artisan migrate
-   ```
-
-8. **Seed default users** (optional):
-   ```bash
-   php artisan db:seed
-   ```
-
-9. **Start Laravel development server**:
-   ```bash
-   php artisan serve
-   ```
-   The API will be available at `http://localhost:8000`
-
-### Frontend Setup
-
-1. **Navigate to the client directory** (in a new terminal):
-   ```bash
-   cd client
-   ```
-
-2. **Install Node dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Update API URL in `.env.local`** (if needed):
-   ```env
-   VITE_API_URL=http://localhost:8000/api
-   ```
-
-4. **Start development server**:
-   ```bash
-   npm run dev
-   ```
-   The frontend will be available at `http://localhost:3000`
-
-## Default Test Users
-
-After seeding the database, you can login with:
-
-### Admin User
-- **Email**: `admin@example.com`
-- **Password**: `password`
-
-### Regular User
-- **Email**: `user@example.com`
-- **Password**: `password`
-
-### Another Regular User
-- **Email**: `jane@example.com`
-- **Password**: `password`
-
-## Usage
-
-1. **Start both servers** (backend and frontend)
-2. **Open browser** and navigate to `http://localhost:3000`
-3. **Login** with one of the test credentials
-4. **Create tasks** using the "Create Task" button
-5. **Filter and search** tasks using the filters
-6. **Edit tasks** by clicking the edit button
-7. **Delete tasks** by clicking the delete button
-8. **Logout** using the user menu in the top-right
-
-## API Documentation
-
-For detailed API documentation, see [API.md](./API.md)
-
-### Quick API Examples
-
-**Login**:
 ```bash
-POST /api/login
-{
-  "email": "admin@example.com",
-  "password": "password"
-}
+cd client
+npm install
+npm run dev                  # → http://localhost:3000
 ```
 
-**Get Tasks**:
-```bash
-GET /api/tasks?page=1&per_page=15&status=pending
-Authorization: Bearer {token}
+## Test Credentials
+
+After `php artisan migrate --seed`:
+
+| Role  | Email               | Password   |
+|-------|---------------------|------------|
+| Admin | admin@example.com   | password   |
+| User  | user@example.com    | password   |
+| User  | jane@example.com    | password   |
+
+## Assumptions & Simplifications
+
+- **No automated tests** — omitted to focus on core functionality within the time constraint. In production I would add PHPUnit feature tests for every endpoint and Vitest component tests.
+- **Token in localStorage** — acceptable for this demo. In production, httpOnly cookies with `SameSite=Strict` would be safer.
+- **No rate limiting** — would add `throttle` middleware on the login route in production.
+- **Soft deletes on tasks** — tasks are never truly removed from the database, allowing recovery.
+- **Admin can assign tasks** — regular users can only create tasks for themselves.
+
+## API Endpoints
+
+```
+POST   /api/login          — get Bearer token
+POST   /api/logout         — revoke token
+GET    /api/user           — current user
+GET    /api/users          — all users (for assignee dropdown)
+GET    /api/tasks          — list (paginated, filterable by status/priority/search)
+POST   /api/tasks          — create
+GET    /api/tasks/{id}     — show
+PUT    /api/tasks/{id}     — update
+DELETE /api/tasks/{id}     — delete (soft)
 ```
 
-**Create Task**:
-```bash
-POST /api/tasks
-Authorization: Bearer {token}
-{
-  "title": "My Task",
-  "description": "Task description",
-  "priority": "high",
-  "status": "pending",
-  "user_id": 1
-}
+All endpoints except `/login` require `Authorization: Bearer {token}`.
+
+---
+
+## Written Questions
+
+### 1. Performance: Scaling `GET /api/tasks` to 1M+ rows
+
+- **Database indexes** — compound indexes on `(user_id, status)`, `(user_id, created_at)`, and single-column indexes on `status`, `priority`, `created_at` to avoid full table scans.
+- **Cursor-based pagination** — replace offset pagination with `WHERE id > :last_id LIMIT n` to avoid the linear cost of large offsets.
+- **Select only needed columns** — `->select(['id','title','status','priority','due_date'])` instead of `SELECT *` to reduce data transfer.
+- **Eager loading** — `Task::with('user')` prevents N+1 queries when including assignee names.
+- **Caching** — cache frequently-read filter combinations (e.g. "admin, all tasks, page 1") in Redis with short TTL; invalidate on write.
+- **Read replicas** — route `GET` traffic to read replicas and writes to the primary.
+- **Query result limits** — cap `per_page` at 100 server-side so clients can't request unbounded result sets.
+- **Async heavy work** — offload exports, bulk deletes, and archival to Laravel queues.
+- **Data archival** — move completed tasks older than a configurable threshold to an archive table to keep the hot table small.
+- **Full-text search** — for the `search` filter, use MySQL `FULLTEXT` indexes or Elasticsearch instead of `LIKE '%term%'` which can't use indexes.
+
+### 2. Security: Securing a Laravel API + Vue SPA
+
+- **SQL injection** — Laravel Eloquent uses parameterized queries by default; never interpolate user input into raw SQL.
+- **XSS** — Vue 3 auto-escapes template output by default. Avoid `v-html` with user content. On the API side, validate and sanitize inputs in Form Requests.
+- **CSRF** — not needed for stateless token-based APIs (no cookies = no CSRF vector). If switching to cookie auth, use Laravel Sanctum's CSRF cookie flow.
+- **Authentication tokens** — use Sanctum with short expiration. In production, store tokens in httpOnly cookies instead of localStorage to prevent XSS from exfiltrating them.
+- **CORS** — restrict `allowed_origins` to the exact frontend domain instead of wildcards.
+- **Rate limiting** — apply `throttle:5,1` to the login endpoint; `throttle:60,1` to authenticated routes.
+- **HTTPS** — force HTTPS in production via `URL::forceScheme('https')` and HSTS headers.
+- **Authorization** — use Laravel Policies (`TaskPolicy`) so users can only access their own resources. Admins bypass via the policy.
+- **Input validation** — every write endpoint uses a dedicated Form Request class with strict rules (`required|string|max:255`, `in:todo,in_progress,done`, etc.).
+
+### 3. TypeScript Benefits in Vue 3
+
+- **Compile-time safety** — catches type errors (wrong prop types, missing fields, invalid enum values) before the code reaches the browser.
+- **IDE support** — autocompletion for props, emits, store state, and API response shapes dramatically speeds up development.
+- **Self-documenting** — interfaces like `Task` and `User` serve as living documentation — no need to check the API docs to know what fields exist.
+- **Safe refactoring** — renaming a field or changing a type immediately highlights every file that needs updating.
+- **Better team collaboration** — typed contracts between components prevent miscommunication about data shapes.
+
+### 4. Code Sample: Vue 3 `<script setup>` with Typed Props
+
+```vue
+<script setup lang="ts">
+import type { Task } from '@/types';
+
+// Strongly typed props — TS enforces callers pass a Task[]
+const props = defineProps<{
+  tasks: Task[];
+  isLoading: boolean;
+  currentPage: number;
+  perPage: number;
+  total: number;
+}>();
+
+// Strongly typed emits — TS enforces event payload types
+const emit = defineEmits<{
+  refresh: [];
+  'update:currentPage': [page: number];
+  'edit-task': [task: Task];
+}>();
+
+// Full autocompletion on task properties
+const editTask = (task: Task) => {
+  emit('edit-task', task); // TS ensures payload matches
+};
+</script>
 ```
 
-## Database Reset
-
-To reset the database and start fresh:
-
-### Using Laravel Artisan:
-```bash
-php artisan migrate:refresh --seed
-```
-
-### Or manually:
-```sql
-DROP DATABASE task_manager;
-CREATE DATABASE task_manager;
-```
-
-Then run migrations again:
-```bash
-php artisan migrate --seed
-```
-
-## Troubleshooting
-
-### "Connection refused" for database
-- Ensure MySQL is running
-- Check database credentials in `.env`
-- Verify the `task_manager` database exists
-
-### "CORS error" or "Cannot reach API"
-- Ensure Laravel server is running on `http://localhost:8000`
-- Verify `VITE_API_URL` in `client/.env.local`
-
-### "npm install" fails
-- Run `npm cache clean --force`
-- Delete `node_modules` and `package-lock.json`
-- Try again: `npm install`
-
-### "composer install" fails
-- Ensure PHP 8.3+ is installed: `php -v`
-- Update Composer: `composer self-update`
-- Try again: `composer install`
-
-## Performance Considerations
-
-For handling 1M+ tasks, refer to [ANSWERS.md](./ANSWERS.md) for detailed performance optimization strategies including:
-- Database indexing
-- Query optimization
-- Pagination strategies
-- Caching considerations
-
-## Security Considerations
-
-Refer to [ANSWERS.md](./ANSWERS.md) for security implementation details including:
-- CORS configuration
-- CSRF token handling
-- Input validation
-- SQL injection prevention
-- XSS prevention
-- Rate limiting
-- Secure token storage
-
-## Development
-
-### Running Tests
-
-Frontend:
-```bash
-npm run test
-```
-
-Backend:
-```bash
-php artisan test
-```
-
-### Build for Production
-
-Frontend:
-```bash
-npm run build
-```
-Output will be in `client/dist/`
-
-Backend is already production-ready. For production deployment:
-1. Set `APP_ENV=production` in `.env`
-2. Set `APP_DEBUG=false` in `.env`
-3. Ensure proper database backups
-4. Configure HTTPS/SSL
-5. Set up proper error logging
-
-## License
-
-This project is part of an HR assignment for Full-Stack Web Developer position.
-
-## Support
-
-For issues or questions, refer to the API documentation or check the written answers at [ANSWERS.md](./ANSWERS.md)
+This component (`TaskList.vue` in this project) demonstrates typed `defineProps` and `defineEmits`. TypeScript will error at compile time if a parent passes wrong prop types or if the emit payload doesn't match the declared signature.

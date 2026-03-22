@@ -15,15 +15,18 @@ class TaskController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $user = Auth::user();
-        $query = Task::query();
+        $query = Task::with('user');
 
         if (!$user->isAdmin()) {
             $query->where('user_id', $user->id);
         }
 
         if (request('search')) {
-            $query->where('title', 'ilike', '%' . request('search') . '%')
-                  ->orWhere('description', 'ilike', '%' . request('search') . '%');
+            $search = request('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
         }
 
         if (request('status')) {
@@ -57,6 +60,7 @@ class TaskController extends Controller
         $data['created_by'] = $user->id;
 
         $task = Task::create($data);
+        $task->load('user');
 
         return response()->json(new TaskResource($task), 201);
     }
@@ -73,6 +77,7 @@ class TaskController extends Controller
         $this->authorize('update', $task);
 
         $task->update($request->validated());
+        $task->load('user');
 
         return response()->json(new TaskResource($task));
     }

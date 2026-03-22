@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['pending', 'completed'])->default('pending');
+            $table->enum('status', ['todo', 'in_progress', 'done'])->default('todo');
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
             $table->timestamp('due_date')->nullable();
             $table->softDeletes();

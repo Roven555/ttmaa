@@ -36,4 +36,10 @@ class AuthController extends Controller
     {
         return response()->json(new UserResource(Auth::user()));
     }
+
+    public function users(): JsonResponse
+    {
+        $users = User::select('id', 'name', 'email', 'role')->get();
+        return response()->json(UserResource::collection($users));
+    }
 }
